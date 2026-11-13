@@ -89,33 +89,34 @@ test('Apple PCC/Siri precede Apple CN, advertising and QUIC; normal Apple/CDN re
   assert.ok(rules.includes('DOMAIN,assets.cdn-apple.com,直连'));
   assert.ok(!rules.includes('RULE-SET,cn,直连'));
 });
-test('observed Siri API has exact priority routing and encrypted DNS in both output modes', () => {
-  const host = 'api-siri-prod.apple.com';
-  const rule = `DOMAIN,${host},Siri`;
-  for (const subscription of [undefined, clean()]) {
-    for (const minimal of [false, true]) {
-      const settings = { options: { 极简国内外分流模式: minimal, 屏蔽代理QUIC流量: true } };
-      const config = build({ subscription, settings }).config;
-      const index = config.rules.indexOf(rule);
-      assert.ok(index >= 0, 'missing Siri API exception');
-      assert.equal(config.rules.filter((r) => r === rule).length, 1);
-      for (const [i, other] of config.rules.entries()) {
-        if (/^RULE-SET,(apple_cn|apple|apple_ip|category-ads),|^AND,/.test(other))
-          assert.ok(index < i, `Siri API must precede ${other}`);
+for (const host of ['api-siri-prod.apple.com', 'setup.icloud.com']) {
+  test(`observed Siri host ${host} has exact priority routing and encrypted DNS in both output modes`, () => {
+    const rule = `DOMAIN,${host},Siri`;
+    for (const subscription of [undefined, clean()]) {
+      for (const minimal of [false, true]) {
+        const settings = { options: { 极简国内外分流模式: minimal, 屏蔽代理QUIC流量: true } };
+        const config = build({ subscription, settings }).config;
+        const index = config.rules.indexOf(rule);
+        assert.ok(index >= 0, 'missing Siri API exception');
+        assert.equal(config.rules.filter((r) => r === rule).length, 1);
+        for (const [i, other] of config.rules.entries()) {
+          if (/^RULE-SET,(apple_cn|apple|apple_ip|category-ads),|^AND,/.test(other))
+            assert.ok(index < i, `Siri API must precede ${other}`);
+        }
+        assert.ok(!config.rules.includes(`DOMAIN-SUFFIX,${host},Siri`));
+        assert.deepEqual(config.dns['nameserver-policy'][host], config.dns['nameserver-policy']['+.smoot.apple.com']);
+        for (const dns of config.dns['nameserver-policy'][host]) assert.match(dns, /^https:\/\/.*#Siri$/);
+        assert.ok(!config.dns['nameserver-policy'][`+.${host}`]);
+        const disabled = build({
+          subscription,
+          settings: { options: { ...settings.options, Siri: false } },
+        }).config;
+        assert.ok(!disabled.rules.includes(rule));
+        assert.ok(!disabled.dns['nameserver-policy'][host]);
       }
-      assert.ok(!config.rules.includes(`DOMAIN-SUFFIX,${host},Siri`));
-      assert.deepEqual(config.dns['nameserver-policy'][host], config.dns['nameserver-policy']['+.smoot.apple.com']);
-      for (const dns of config.dns['nameserver-policy'][host]) assert.match(dns, /^https:\/\/.*#Siri$/);
-      assert.ok(!config.dns['nameserver-policy'][`+.${host}`]);
-      const disabled = build({
-        subscription,
-        settings: { options: { ...settings.options, Siri: false } },
-      }).config;
-      assert.ok(!disabled.rules.includes(rule));
-      assert.ok(!disabled.dns['nameserver-policy'][host]);
     }
-  }
-});
+  });
+}
 test('international iCloud content suffix shares priority routing and DNS while excluding China sites', () => {
   const targets = [
     ['DOMAIN,gateway.icloud.com,Apple智能', 'gateway.icloud.com'],

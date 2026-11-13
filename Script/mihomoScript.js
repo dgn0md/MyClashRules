@@ -834,6 +834,8 @@ const appleEndpointDefinitions = {
     '+.smoot.apple.com',
     // 用户在 Siri 请求中观察到的主机；官方企业网络清单尚未单列，精确匹配并沿用 Siri 的 DNS/出口。
     'api-siri-prod.apple.com',
+    // 用户观察到规则模式失败、全局成功时访问此共享 iCloud 初始化接口；按用户选择精确代理。
+    'setup.icloud.com',
   ],
   AppleNews: [
     '+.apple.news',
