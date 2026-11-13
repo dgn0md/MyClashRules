@@ -123,6 +123,9 @@ dns:
     +.smoot.apple.com:
       - https://cloudflare-dns.com/dns-query#Siri
       - https://dns.google/dns-query#Siri
+    api-siri-prod.apple.com:
+      - https://cloudflare-dns.com/dns-query#Siri
+      - https://dns.google/dns-query#Siri
     +.apple.news:
       - https://cloudflare-dns.com/dns-query#AppleNews
       - https://dns.google/dns-query#AppleNews
@@ -1706,6 +1709,7 @@ rules:
   - DOMAIN-SUFFIX,icloud-content.com,Apple智能
   - DOMAIN,guzzoni.apple.com,Siri
   - DOMAIN-SUFFIX,smoot.apple.com,Siri
+  - DOMAIN,api-siri-prod.apple.com,Siri
   - DOMAIN-SUFFIX,apple.news,AppleNews
   - DOMAIN,news-client.apple.com,AppleNews
   - DOMAIN,news-client-search.apple.com,AppleNews

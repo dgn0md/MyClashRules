@@ -93,6 +93,7 @@ const CASES = [
   ['icloud-content.com.cn', '直连'],
   ['edge-013.hkhkg2.icloud-content.com.example.test', '直连'],
   ['guzzoni.apple.com', 'Siri'],
+  ['api-siri-prod.apple.com', 'Siri'],
   ['api.smoot.apple.com', 'Siri'],
   ['news-client-search.apple.com', 'AppleNews'],
   ['news-assets.apple.com', 'AppleNews'],

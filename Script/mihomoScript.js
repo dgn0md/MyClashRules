@@ -829,7 +829,12 @@ const appleEndpointDefinitions = {
     'gateway.icloud.com',
     '+.icloud-content.com',
   ],
-  Siri: ['guzzoni.apple.com', '+.smoot.apple.com'],
+  Siri: [
+    'guzzoni.apple.com',
+    '+.smoot.apple.com',
+    // 用户在 Siri 请求中观察到的主机；官方企业网络清单尚未单列，精确匹配并沿用 Siri 的 DNS/出口。
+    'api-siri-prod.apple.com',
+  ],
   AppleNews: [
     '+.apple.news',
     'news-client.apple.com',
