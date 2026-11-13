@@ -89,10 +89,10 @@ test('Apple PCC/Siri precede Apple CN, advertising and QUIC; normal Apple/CDN re
   assert.ok(rules.includes('DOMAIN,assets.cdn-apple.com,直连'));
   assert.ok(!rules.includes('RULE-SET,cn,直连'));
 });
-test('Siri iCloud edge family shares one bounded matcher for routing and DNS', () => {
+test('international iCloud content suffix shares priority routing and DNS while excluding China sites', () => {
   const targets = [
     ['DOMAIN,gateway.icloud.com,Apple智能', 'gateway.icloud.com'],
-    ['RULE-SET,apple_ai_edge,Apple智能', 'rule-set:apple_ai_edge'],
+    ['DOMAIN-SUFFIX,icloud-content.com,Apple智能', '+.icloud-content.com'],
   ];
   for (const subscription of [undefined, clean()]) {
     for (const minimal of [false, true]) {
@@ -102,64 +102,32 @@ test('Siri iCloud edge family shares one bounded matcher for routing and DNS', (
       }).config;
       graph(config);
       encryptedDns(config);
-      const provider = config['rule-providers'].apple_ai_edge;
-      assert.equal(provider.type, 'inline');
-      assert.equal(provider.behavior, 'classical');
-      assert.equal(provider.payload.length, 1);
-      assert.ok(provider.payload[0].startsWith('DOMAIN-REGEX,'));
-      const pattern = new RegExp(provider.payload[0].slice('DOMAIN-REGEX,'.length));
-      for (const host of [
-        'edge-013.hkhkg2.icloud-content.com',
-        'edge-014.hkhkg2.icloud-content.com',
-        'edge-013.ussjc2.icloud-content.com',
-        'edge-001.twtpe1.icloud-content.com',
-        'edge-001.momfm1.icloud-content.com',
-        'edge-9999.region-new9.icloud-content.com',
-      ])
-        assert.ok(pattern.test(host), `missing edge family member: ${host}`);
-      for (const host of [
-        'icloud-content.com',
-        'content.icloud-content.com',
-        'content.hkhkg2.icloud-content.com',
-        'edge-abc.hkhkg2.icloud-content.com',
-        'edge-013.icloud-content.com',
-        'x.edge-013.hkhkg2.icloud-content.com',
-        'edge-013.hkhkg2.icloud-content.com.example.org',
-        'edge-051.xactu3.icloud-content.com.cn',
-        'edge-013.hkhkg2.icloud-content.com.cn',
-        'gateway.icloud.com.cn',
-      ])
-        assert.ok(!pattern.test(host), `edge matcher too broad: ${host}`);
+      assert.ok(!config['rule-providers'].apple_ai_edge);
+      assert.ok(!config.rules.includes('RULE-SET,apple_ai_edge,Apple智能'));
+      assert.ok(!config.dns['nameserver-policy']['rule-set:apple_ai_edge']);
       for (const [rule, policy] of targets) {
         const index = config.rules.indexOf(rule);
         assert.ok(index >= 0, `missing AI exception: ${rule}`);
-        for (const [i, rule] of config.rules.entries()) {
-          if (/^RULE-SET,(apple_cn|apple|apple_ip|category-ads),|^AND,/.test(rule))
-            assert.ok(index < i, `${policy} must precede ${rule}`);
+        for (const [i, other] of config.rules.entries()) {
+          if (/^RULE-SET,(apple_cn|apple|apple_ip|category-ads),|^AND,/.test(other))
+            assert.ok(index < i, `${policy} must precede ${other}`);
         }
         assert.deepEqual(
           config.dns['nameserver-policy'][policy],
           config.dns['nameserver-policy']['apple-relay.apple.com'],
         );
       }
-      assert.ok(!config.rules.includes('DOMAIN,edge-013.hkhkg2.icloud-content.com,Apple智能'));
-      assert.ok(!config.dns['nameserver-policy']['edge-013.hkhkg2.icloud-content.com']);
-      for (const suffix of [
-        'icloud.com',
-        'icloud.com.cn',
-        'icloud-content.com',
-        'icloud-content.com.cn',
-        'hkhkg2.icloud-content.com',
-        'gateway.icloud.com',
-      ]) {
+      for (const suffix of ['icloud.com', 'icloud.com.cn', 'icloud-content.com.cn', 'gateway.icloud.com']) {
         assert.ok(!config.rules.includes(`DOMAIN-SUFFIX,${suffix},Apple智能`));
         assert.ok(!config.dns['nameserver-policy'][`+.${suffix}`]);
       }
-      assert.ok(!config.rules.includes('DOMAIN,gateway.icloud.com.cn,Apple智能'));
-      assert.ok(!config.dns['nameserver-policy']['gateway.icloud.com.cn']);
+      for (const host of ['gateway.icloud.com.cn', 'ussjc1.icloud-content.com.cn', 'xactu3.icloud-content.com.cn']) {
+        assert.ok(!config.rules.includes(`DOMAIN,${host},Apple智能`));
+        assert.ok(!config.dns['nameserver-policy'][host]);
+      }
     }
     const off = build({ subscription, settings: { options: { Apple智能: false } } }).config;
-    assert.ok(!off['rule-providers'].apple_ai_edge);
+    graph(off);
     for (const [rule, policy] of targets) {
       assert.ok(!off.rules.includes(rule));
       assert.ok(!off.dns['nameserver-policy'][policy]);

@@ -8,7 +8,7 @@ const { once } = require('node:events');
 const assert = require('node:assert/strict');
 const YAML = require('yaml');
 const { build, load } = require('./build');
-const { fixtures, verifyRouting, verifyEdgeDnsPolicy, CASES } = require('./runtime-routing');
+const { fixtures, verifyRouting, verifyICloudContentDnsPolicy, CASES } = require('./runtime-routing');
 async function freePort() {
   const s = net.createServer();
   s.listen(0, '127.0.0.1');
@@ -65,16 +65,14 @@ async function run() {
   const proxyPort = await freePort();
   config.tun.enable = false;
   // Keep the production policy keys/matchers, but replace upstreams with in-process responses.
-  // NXDOMAIN identifies the edge policy; no DNS query leaves this isolated test.
+  // NXDOMAIN identifies the international content policy; no DNS query leaves this isolated test.
   config.dns.enable = true;
   config.dns.listen = '';
   config.dns['use-hosts'] = false;
   for (const key of ['nameserver', 'direct-nameserver', 'proxy-server-nameserver'])
     config.dns[key] = ['rcode://success'];
   for (const key of Object.keys(config.dns['nameserver-policy']))
-    config.dns['nameserver-policy'][key] = [
-      key === 'rule-set:apple_ai_edge' ? 'rcode://name_error' : 'rcode://success',
-    ];
+    config.dns['nameserver-policy'][key] = [key === '+.icloud-content.com' ? 'rcode://name_error' : 'rcode://success'];
   config.ntp.enable = false;
   config['mixed-port'] = proxyPort;
   config['external-controller'] = `127.0.0.1:${port}`;
@@ -131,7 +129,7 @@ async function run() {
     assert.equal(proxies.Apple.now, '直连');
     assert.equal(proxies.Microsoft.now, '直连');
     const routes = await verifyRouting({ port: proxyPort, sinkPort: local.sinkPort, track: local.track, api });
-    const dnsPolicies = await verifyEdgeDnsPolicy(api);
+    const dnsPolicies = await verifyICloudContentDnsPolicy(api);
     fs.writeFileSync(path.join(temp, 'routes.json'), JSON.stringify(routes, null, 2));
     fs.writeFileSync(path.join(temp, 'dns-policies.json'), JSON.stringify(dnsPolicies, null, 2));
     fs.writeFileSync(path.join(temp, 'providers.json'), JSON.stringify(providers, null, 2));

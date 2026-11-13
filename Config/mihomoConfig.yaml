@@ -33,7 +33,7 @@ x-myClashRules:
     Patreon: true # Patreon创作者赞助平台
     EHentai: true # E-Hentai网站
     AdBlock: true # 广告拦截
-    Apple智能: true # PCC + Extensions + 国际 gateway/edge 共享接口（排除 .com.cn），默认美国
+    Apple智能: true # PCC + Extensions + 国际 gateway/全部 iCloud 内容域（排除 .com.cn），默认美国
     Siri: true # Siri/听写/Spotlight 搜索单独选择出口，默认美国
     AppleNews: true # News/News+ 专用接口与内容，默认美国；不代理所有新闻网站
     AppleTV: true # TV/TV+ 专用接口与视频；共享 iTunes 媒体端点可能同时服务其他产品
@@ -114,7 +114,7 @@ dns:
     gateway.icloud.com:
       - https://cloudflare-dns.com/dns-query#Apple智能
       - https://dns.google/dns-query#Apple智能
-    rule-set:apple_ai_edge:
+    +.icloud-content.com:
       - https://cloudflare-dns.com/dns-query#Apple智能
       - https://dns.google/dns-query#Apple智能
     guzzoni.apple.com:
@@ -1695,12 +1695,6 @@ rule-providers:
     behavior: domain
     url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/apple-tvplus.mrs
     path: ./ruleset/apple_tv.mrs
-  apple_ai_edge:
-    type: inline
-    behavior: classical
-    format: yaml
-    payload:
-      - DOMAIN-REGEX,^edge-[0-9]+\.[a-z0-9-]+\.icloud-content\.com$
 rules:
   # 顺序：DNS 接管 → Apple AI/Siri/CDN 例外 → 广告/国内服务 → 服务域名 → 海外域名 → CN IP → 私网 IP → 服务 IP → 兜底。
   - DST-PORT,53,内置DNS
@@ -1709,7 +1703,7 @@ rules:
   - DOMAIN,cp4.cloudflare.com,Apple智能
   - DOMAIN,apple-relay.apple.com,Apple智能
   - DOMAIN,gateway.icloud.com,Apple智能
-  - RULE-SET,apple_ai_edge,Apple智能
+  - DOMAIN-SUFFIX,icloud-content.com,Apple智能
   - DOMAIN,guzzoni.apple.com,Siri
   - DOMAIN-SUFFIX,smoot.apple.com,Siri
   - DOMAIN-SUFFIX,apple.news,AppleNews

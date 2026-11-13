@@ -73,12 +73,25 @@ const CASES = [
   ['edge-014.hkhkg2.icloud-content.com', 'Apple智能'],
   ['edge-013.ussjc2.icloud-content.com', 'Apple智能'],
   ['edge-9999.region-new9.icloud-content.com', 'Apple智能'],
-  ['content.hkhkg2.icloud-content.com', '直连'],
-  ['edge-abc.hkhkg2.icloud-content.com', '直连'],
-  ['edge-013.icloud-content.com', '直连'],
-  ['x.edge-013.hkhkg2.icloud-content.com', '直连'],
+  ['content.hkhkg2.icloud-content.com', 'Apple智能'],
+  ['edge-abc.hkhkg2.icloud-content.com', 'Apple智能'],
+  ['edge-013.icloud-content.com', 'Apple智能'],
+  ['x.edge-013.hkhkg2.icloud-content.com', 'Apple智能'],
   ['edge-051.xactu3.icloud-content.com.cn', '直连'],
   ['gateway.icloud.com.cn', '直连'],
+  ['ussjc1.icloud-content.com', 'Apple智能'],
+  ['hkhkg2.icloud-content.com', 'Apple智能'],
+  ['sgsin8.icloud-content.com', 'Apple智能'],
+  ['gbslo5.icloud-content.com', 'Apple智能'],
+  ['ussjc1.icloud-content.com.cn', '直连'],
+  ['xactu3.icloud-content.com.cn', '直连'],
+  ['x.ussjc1.icloud-content.com', 'Apple智能'],
+  ['content1.icloud-content.com', 'Apple智能'],
+  ['icloud-content.com', 'Apple智能'],
+  ['cvws.icloud-content.com', 'Apple智能'],
+  ['gateway-asset.icloud-content.com', 'Apple智能'],
+  ['icloud-content.com.cn', '直连'],
+  ['edge-013.hkhkg2.icloud-content.com.example.test', '直连'],
   ['guzzoni.apple.com', 'Siri'],
   ['api.smoot.apple.com', 'Siri'],
   ['news-client-search.apple.com', 'AppleNews'],
@@ -138,10 +151,10 @@ async function verifyRouting({ port, sinkPort, track, api }) {
   }
   return evidence;
 }
-async function verifyEdgeDnsPolicy(api) {
-  // native-check substitutes local RCODE clients: NXDOMAIN marks the edge policy, NOERROR the rest.
+async function verifyICloudContentDnsPolicy(api) {
+  // native-check substitutes local RCODE clients: NXDOMAIN marks the content policy, NOERROR the rest.
   const evidence = [];
-  const cases = CASES.filter(([host]) => /\.icloud-content\.com(?:\.cn)?$/.test(host)).map(([host, expected]) => [
+  const cases = CASES.filter(([host]) => /(^|\.)icloud-content\.com(?:\.cn)?$/.test(host)).map(([host, expected]) => [
     host,
     expected === 'Apple智能' ? 3 : 0,
   ]);
@@ -156,4 +169,4 @@ async function verifyEdgeDnsPolicy(api) {
   }
   return evidence;
 }
-module.exports = { fixtures, verifyRouting, verifyEdgeDnsPolicy, CASES };
+module.exports = { fixtures, verifyRouting, verifyICloudContentDnsPolicy, CASES };

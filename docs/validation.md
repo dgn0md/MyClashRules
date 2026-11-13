@@ -34,11 +34,11 @@ node tools/native-check.js /path/to/mihomo .local/rules
 
 GitHub CI 使用同版本 Linux 二进制并核验官方发行摘要；新建 workflow 尚需在远程推送后才能获得 GitHub Actions 的实际结果，不能将本机通过写成远程 CI 已绿。
 
-## 国际 edge 模式回归
+## 国际 iCloud 内容域回归
 
-`tools/native-check.js` 还校验内联 `apple_ai_edge` 正则的路由和 DNS 边界：不同数字编号/地区的国际 edge 命中 `Apple智能`，其他主机结构与中国站 `edge-051.xactu3.icloud-content.com.cn`、`gateway.icloud.com.cn` 继续原有规则。域名边界样本包含合成主机，不声称这些合成主机真实存在。
+`tools/native-check.js` 验证国际 `icloud-content.com` 根域及各层子域命中 `Apple智能`，覆盖地区根域、edge、非标准编号和其他内容主机。中国站 `icloud-content.com.cn`、`xactu3.icloud-content.com.cn`、`gateway.icloud.com.cn` 以及伪造的后缀延长域名不命中该例外。测试包含合成主机，不声称它们真实存在。
 
-DNS 检查保留生成配置的 policy 键和内联 matcher，仅在隔离测试中把上游替换为内核内置的本地 RCODE 响应，区分匹配/未匹配，验证 A 与 AAAA；不询问系统 DNS，不产生外网 DNS 请求。生产配置仍使用 DoH。该检查验证模式一致性，不是 Siri 或运营商网络实测。
+DNS 检查保留生成配置的 policy 键，仅在隔离测试中把上游替换为内核内置的本地 RCODE 响应，区分匹配/未匹配，验证 A 与 AAAA；不询问系统 DNS，不产生外网 DNS 请求。生产配置仍使用 DoH。该检查验证路由和 DNS 后缀范围一致，不是 Siri 或运营商网络实测。
 
 ## DoH 端点检查
 
