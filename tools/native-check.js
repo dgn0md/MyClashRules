@@ -8,7 +8,7 @@ const { once } = require('node:events');
 const assert = require('node:assert/strict');
 const YAML = require('yaml');
 const { build, load } = require('./build');
-const { fixtures, verifyRouting, CASES } = require('./runtime-routing');
+const { fixtures, verifyRouting, verifyEdgeDnsPolicy, CASES } = require('./runtime-routing');
 async function freePort() {
   const s = net.createServer();
   s.listen(0, '127.0.0.1');
@@ -54,7 +54,8 @@ async function run() {
   console.log(`Mihomo syntax checks: ${cases.length} cases passed`);
   if (!rulesDir) return;
   const config = build().config;
-  for (const name of Object.keys(config['rule-providers'])) {
+  for (const [name, spec] of Object.entries(config['rule-providers'])) {
+    if (spec.type === 'inline') continue;
     const file = path.resolve(rulesDir, `${name}.mrs`);
     assert.ok(fs.existsSync(file) && fs.statSync(file).size > 16, `missing MRS ${name}`);
   }
@@ -63,7 +64,17 @@ async function run() {
   const port = await freePort();
   const proxyPort = await freePort();
   config.tun.enable = false;
-  config.dns.enable = false;
+  // Keep the production policy keys/matchers, but replace upstreams with in-process responses.
+  // NXDOMAIN identifies the edge policy; no DNS query leaves this isolated test.
+  config.dns.enable = true;
+  config.dns.listen = '';
+  config.dns['use-hosts'] = false;
+  for (const key of ['nameserver', 'direct-nameserver', 'proxy-server-nameserver'])
+    config.dns[key] = ['rcode://success'];
+  for (const key of Object.keys(config.dns['nameserver-policy']))
+    config.dns['nameserver-policy'][key] = [
+      key === 'rule-set:apple_ai_edge' ? 'rcode://name_error' : 'rcode://success',
+    ];
   config.ntp.enable = false;
   config['mixed-port'] = proxyPort;
   config['external-controller'] = `127.0.0.1:${port}`;
@@ -78,6 +89,7 @@ async function run() {
   fs.writeFileSync(provider, YAML.stringify({ proxies: nodes }));
   config['proxy-providers'] = { 订阅: { type: 'file', path: provider, 'health-check': { enable: false } } };
   for (const [name, spec] of Object.entries(config['rule-providers'])) {
+    if (spec.type === 'inline') continue;
     const file = path.resolve(rulesDir, `${name}.mrs`);
     assert.ok(fs.existsSync(file) && fs.statSync(file).size > 16, `missing MRS ${name}`);
     const localFile = path.join(temp, `${name}.mrs`);
@@ -119,12 +131,15 @@ async function run() {
     assert.equal(proxies.Apple.now, '直连');
     assert.equal(proxies.Microsoft.now, '直连');
     const routes = await verifyRouting({ port: proxyPort, sinkPort: local.sinkPort, track: local.track, api });
+    const dnsPolicies = await verifyEdgeDnsPolicy(api);
     fs.writeFileSync(path.join(temp, 'routes.json'), JSON.stringify(routes, null, 2));
+    fs.writeFileSync(path.join(temp, 'dns-policies.json'), JSON.stringify(dnsPolicies, null, 2));
     fs.writeFileSync(path.join(temp, 'providers.json'), JSON.stringify(providers, null, 2));
     console.log(
-      `Offline runtime: ${Object.keys(providers).length} real MRS providers loaded; region/rate/home filters and Apple defaults verified`,
+      `Offline runtime: ${Object.keys(providers).length} MRS/inline providers loaded; region/rate/home filters and Apple defaults verified`,
     );
     console.log(`Loopback routing: ${routes.length} actual CONNECT decisions verified`);
+    console.log(`Offline DNS: ${dnsPolicies.length} actual A/AAAA policy decisions verified`);
     console.log(`Evidence directory: ${temp}`);
   } finally {
     fs.writeFileSync(path.join(temp, 'runtime.log'), logs);

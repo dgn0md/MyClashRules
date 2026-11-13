@@ -124,7 +124,7 @@ function render(config, api, settings) {
     'proxy-providers': '填入 Clash/Mihomo 订阅 URL；静态 provider 模式不能读取机场的顶层 DNS/hosts。',
     proxies: '自定义节点与五种直连出口；链式落地须在 x-myClashRules.customProxies 配置并重新生成。',
     'proxy-groups': '全量服务/地区/倍率/家宽组。静态地区无节点时回退 REJECT；脚本只生成有节点的组。',
-    'rule-providers': '按需加载 MRS，每日更新。路径区分 domain/ipcidr；国内域名库仅参与 DNS，不整体强制直连。',
+    'rule-providers': '远程 MRS 每日更新；本地 inline 规则随配置更新。国内域名库仅参与 DNS，不整体强制直连。',
     rules:
       '顺序：DNS 接管 → Apple AI/Siri/CDN 例外 → 广告/国内服务 → 服务域名 → 海外域名 → CN IP → 私网 IP → 服务 IP → 兜底。',
   };

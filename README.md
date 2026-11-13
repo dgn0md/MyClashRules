@@ -50,7 +50,7 @@ node tools/build.js --settings Config/mihomoConfig.yaml --subscription .local/su
 
 | 开关/组                                       | 默认  | 覆盖范围与取舍                                                                                              |
 | --------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------- |
-| `Apple智能`                                   | true  | PCC 中继、Apple Intelligence Extensions；保留 TCP/UDP，先于 QUIC 屏蔽                                       |
+| `Apple智能`                                   | true  | PCC 中继、Apple Intelligence Extensions、国际 gateway/edge 共享接口（排除 `.com.cn`）；先于 QUIC 屏蔽 |
 | `Siri`                                        | true  | Siri/听写和 `smoot` 搜索接口；搜索接口也被 Spotlight、Safari、News 等共享                                   |
 | `AppleNews`                                   | true  | News/News+ 专用 API、内容及 `apple.news`，不会代理全部新闻网站                                              |
 | `AppleTV`                                     | true  | TV/TV+ 专用接口与每日更新规则；部分 iTunes 播放接口是共享端点                                               |
@@ -62,6 +62,10 @@ node tools/build.js --settings Config/mihomoConfig.yaml --subscription .local/su
 | `Apple服务默认直连`                           | true  | 商店、更新、iCloud、Music 等普通 Apple 服务；专用例外优先                                                   |
 
 这些是网络出口策略。账号/商店地区、硬件、系统语言、订阅、SIM 和服务端资格仍影响产品可用性。共享域名无法区分 HTTPS 路径内的不同产品；本项目不把所有 `apple.com`、`icloud.com` 或 `17.0.0.0/8` 强制代理。Fitness/Sports/Books 的专用入口分流不等于覆盖所有共享后端，实际缺失端点需根据连接日志补充。[Apple 端点与限制](docs/apple-routing.md) 给出来源及判断依据。
+
+`Apple智能` 还精确覆盖用户在 Siri 失败期间观察到的 `gateway.icloud.com`，并按 `^edge-[0-9]+\.[a-z0-9-]+\.icloud-content\.com$` 覆盖国际 edge 数字编号与单层地区标签的变化，例如 `edge-013.hkhkg2.icloud-content.com`、`edge-014.hkhkg2.icloud-content.com`、`edge-013.ussjc2.icloud-content.com`。内联 `apple_ai_edge` 规则集同时用于路由和经该组的加密 DNS，无需逐个添加编号/地区，也无需远程下载此规则集。
+
+末尾 `.com$` 排除中国站 `.com.cn`；已通过加密 DNS 核实的大陆样本为 `edge-051.xactu3.icloud-content.com.cn` 和 `gateway.icloud.com.cn`，不应假设大陆地区标签一定以 `cn` 开头。这里区分的是域名命名空间，不能保证服务器实际 IP 的地理位置。符合国际 edge 结构的照片、文件等普通 iCloud 内容也可能代理；这不是 Siri 专属识别。其他命名结构、整个内容域及 gateway 子域不被此补充覆盖。此补充不代表已确认 Siri 的故障原因或恢复可用。更新配置后重新连接 VPN，并让 `Apple智能` 与 `Siri` 选择同一可用出口，再检查新的连接记录。
 
 ## DNS 设计与适用边界
 

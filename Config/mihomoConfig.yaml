@@ -33,7 +33,7 @@ x-myClashRules:
     Patreon: true # Patreon创作者赞助平台
     EHentai: true # E-Hentai网站
     AdBlock: true # 广告拦截
-    Apple智能: true # Private Cloud Compute + Apple Intelligence Extensions，默认美国
+    Apple智能: true # PCC + Extensions + 国际 gateway/edge 共享接口（排除 .com.cn），默认美国
     Siri: true # Siri/听写/Spotlight 搜索单独选择出口，默认美国
     AppleNews: true # News/News+ 专用接口与内容，默认美国；不代理所有新闻网站
     AppleTV: true # TV/TV+ 专用接口与视频；共享 iTunes 媒体端点可能同时服务其他产品
@@ -109,6 +109,12 @@ dns:
       - https://cloudflare-dns.com/dns-query#Apple智能
       - https://dns.google/dns-query#Apple智能
     apple-relay.apple.com:
+      - https://cloudflare-dns.com/dns-query#Apple智能
+      - https://dns.google/dns-query#Apple智能
+    gateway.icloud.com:
+      - https://cloudflare-dns.com/dns-query#Apple智能
+      - https://dns.google/dns-query#Apple智能
+    rule-set:apple_ai_edge:
       - https://cloudflare-dns.com/dns-query#Apple智能
       - https://dns.google/dns-query#Apple智能
     guzzoni.apple.com:
@@ -1321,7 +1327,7 @@ proxy-groups:
     include-all-providers: true
     exclude-filter: (?i)(?:群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|电报|无法|说明|提示|访问|支持|教程|关注|更新|作者|加入|超时|收藏|优惠|福利|邀请|好友|失联|选择|剩余|公益|发布|DIZTNA|通路|登录|禁止|定时|渠道|牢记|永久|余额|阁下|本站|刷新|导航|建议|重置|以下|过滤|⚠️|@|t\.me\/\+|\bexpire\b|\bhttps?:\/\/|\.com|\btraffic\b|🇭🇰|香港|(?<![A-Za-z])HKG?(?![A-Za-z])|hong\s*kong|🇯🇵|日本|东京|大阪|京都|(?<![A-Za-z])JPN?(?![A-Za-z])|japan|🇺🇸|美国|纽约|洛杉矶|旧金山|芝加哥|休斯顿|迈阿密|西雅图|波士顿|华盛顿|拉斯维加斯|圣何塞|(?<![A-Za-z])USA?(?![A-Za-z])|america|united\s*states|🇸🇬|新加坡|狮城|(?<![A-Za-z])SGP?(?![A-Za-z])|singapore|🇹🇼|台湾|台北|高雄|(?<![A-Za-z])TWN?(?![A-Za-z])|taiwan)
 rule-providers:
-  # 按需加载 MRS，每日更新。路径区分 domain/ipcidr；国内域名库仅参与 DNS，不整体强制直连。
+  # 远程 MRS 每日更新；本地 inline 规则随配置更新。国内域名库仅参与 DNS，不整体强制直连。
   private:
     type: http
     format: mrs
@@ -1689,6 +1695,12 @@ rule-providers:
     behavior: domain
     url: https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/apple-tvplus.mrs
     path: ./ruleset/apple_tv.mrs
+  apple_ai_edge:
+    type: inline
+    behavior: classical
+    format: yaml
+    payload:
+      - DOMAIN-REGEX,^edge-[0-9]+\.[a-z0-9-]+\.icloud-content\.com$
 rules:
   # 顺序：DNS 接管 → Apple AI/Siri/CDN 例外 → 广告/国内服务 → 服务域名 → 海外域名 → CN IP → 私网 IP → 服务 IP → 兜底。
   - DST-PORT,53,内置DNS
@@ -1696,6 +1708,8 @@ rules:
   - DOMAIN,apple-relay.fastly-edge.com,Apple智能
   - DOMAIN,cp4.cloudflare.com,Apple智能
   - DOMAIN,apple-relay.apple.com,Apple智能
+  - DOMAIN,gateway.icloud.com,Apple智能
+  - RULE-SET,apple_ai_edge,Apple智能
   - DOMAIN,guzzoni.apple.com,Siri
   - DOMAIN-SUFFIX,smoot.apple.com,Siri
   - DOMAIN-SUFFIX,apple.news,AppleNews

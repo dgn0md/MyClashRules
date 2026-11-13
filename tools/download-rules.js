@@ -7,7 +7,7 @@ const { build } = require('./build');
 async function run() {
   const dir = path.resolve(process.argv[2] || '.local/rules');
   fs.mkdirSync(dir, { recursive: true });
-  const entries = Object.entries(build().config['rule-providers']);
+  const entries = Object.entries(build().config['rule-providers']).filter(([, spec]) => spec.type !== 'inline');
   const manifest = [];
   let cursor = 0;
   async function worker() {

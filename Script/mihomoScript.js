@@ -47,8 +47,8 @@ const ruleOptionsEnable = {
   EHentai: true, // E-Hentai网站
   AdBlock: true, // 广告拦截
 
-  // Apple 精细分流：只代理 AI/Siri 端点，商店、更新、iCloud 等仍按原 Apple 规则。
-  Apple智能: true, // Private Cloud Compute + Apple Intelligence Extensions，默认美国
+  // Apple 精细分流：AI/Siri 端点和已观察到的共享接口优先，其余 Apple 服务仍按原规则。
+  Apple智能: true, // PCC + Extensions + 国际 gateway/edge 共享接口（排除 .com.cn），默认美国
   Siri: true, // Siri/听写/Spotlight 搜索单独选择出口，默认美国
   AppleNews: true, // News/News+ 专用接口与内容，默认美国；不代理所有新闻网站
   AppleTV: true, // TV/TV+ 专用接口与视频；共享 iTunes 媒体端点可能同时服务其他产品
@@ -814,13 +814,26 @@ const serviceConfigs = [
 ];
 
 // 来源：Apple 企业网络文档 https://support.apple.com/en-us/101555（2026-11-13 核对）。
-// 使用精确端点，不代理整个 apple.com / cloudflare.com / 17.0.0.0/8。
+// 使用精确端点及有边界的 edge 模式，不代理整个 Apple / Cloudflare / iCloud 内容域或 17/8。
+// 由用户观察到的 edge 主机推广至国际 .com 下相同命名结构；共享内容并非 AI 专用。
+// 大陆已核实样本 edge-051.xactu3.icloud-content.com.cn；用末尾锚定排除 .com.cn，不猜地区代码。
+// 内联 classical 规则集让路由与 DNS 复用正则，避免 DNS 通配符扩大到整个内容域。
+const appleAiEdgeProvider = {
+  type: 'inline',
+  behavior: 'classical',
+  format: 'yaml',
+  payload: ['DOMAIN-REGEX,^edge-[0-9]+\\.[a-z0-9-]+\\.icloud-content\\.com$'],
+};
 const appleEndpointDefinitions = {
   Apple智能: [
     'apple-relay.cloudflare.com',
     'apple-relay.fastly-edge.com',
     'cp4.cloudflare.com',
     'apple-relay.apple.com',
+    // 用户观察到 Siri 失败时访问以下主机；它们是共享 iCloud 接口，非 AI 专用。
+    // gateway 精确匹配；edge 覆盖不同数字编号和单层地区标签，不扩展整个内容域。
+    'gateway.icloud.com',
+    'rule-set:apple_ai_edge',
   ],
   Siri: ['guzzoni.apple.com', '+.smoot.apple.com'],
   AppleNews: [
@@ -853,6 +866,10 @@ const appleEndpointDefinitions = {
     'se2.itunes.apple.com',
   ],
 };
+function appleEndpointRule(domain, name) {
+  if (domain.startsWith('rule-set:')) return `RULE-SET,${domain.slice('rule-set:'.length)},${name}`;
+  return `${domain.startsWith('+.') ? 'DOMAIN-SUFFIX' : 'DOMAIN'},${domain.replace(/^\+\./, '')},${name}`;
+}
 for (const name of Object.keys(appleEndpointDefinitions)) {
   serviceConfigs.push({
     name,
@@ -860,9 +877,7 @@ for (const name of Object.keys(appleEndpointDefinitions)) {
     direct: true,
     defaultSelected: '美国',
     icon: `${iconBaseUrl}Apple.svg`,
-    rules: appleEndpointDefinitions[name].map(
-      (domain) => `${domain.startsWith('+.') ? 'DOMAIN-SUFFIX' : 'DOMAIN'},${domain.replace(/^\+\./, '')},${name}`,
-    ),
+    rules: appleEndpointDefinitions[name].map((domain) => appleEndpointRule(domain, name)),
     ...(name === 'AppleTV'
       ? {
           providers: {
@@ -2088,10 +2103,9 @@ function finalizeMyClashRules(config) {
     const selected = group.proxies.includes('美国') ? '美国' : '默认代理';
     group.proxies = [selected, ...group.proxies.filter((p) => p !== selected)];
     delete group['default-selected'];
+    if (name === 'Apple智能') config['rule-providers'].apple_ai_edge = appleAiEdgeProvider;
     for (const domain of domains) {
-      specialRules.push(
-        `${domain.startsWith('+.') ? 'DOMAIN-SUFFIX' : 'DOMAIN'},${domain.replace(/^\+\./, '')},${name}`,
-      );
+      specialRules.push(appleEndpointRule(domain, name));
       config.dns['nameserver-policy'][domain] = foreignDNS.map((dns) => dns.replace('#默认代理', `#${name}`));
     }
     if (name === 'AppleTV') {
