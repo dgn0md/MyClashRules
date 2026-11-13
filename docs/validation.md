@@ -4,7 +4,7 @@
 
 ## 可复现的代码检查
 
-- `npm test`：93 项继承回归/ES2026/QuickJS 检查、15 组新增检查通过。新增开关矩阵逐个反转全部布尔选项，并检查静态 provider 与展开订阅两种输出的引用、循环、DNS 与生成行为。
+- `npm test`：93 项继承回归/ES2026/QuickJS 检查、19 组新增检查通过。新增开关矩阵逐个反转全部布尔选项，并检查静态 provider 与展开订阅两种输出的引用、循环、DNS 与生成行为。
 - `npm run check`：发布的默认 YAML 与当前脚本生成结果完全一致。
 - `git diff --check`：无空白错误。
 - 依赖安装审计：0 个已报告漏洞；YAML 使用修复深度嵌套问题的 2.9.1。
@@ -25,7 +25,7 @@ node tools/download-rules.js .local/rules
 node tools/native-check.js /path/to/mihomo .local/rules
 ```
 
-- 原生 `-t` 检查：默认、所有单选项反转、双倍率过滤、展开订阅、自定义链式共 **62** 种配置。
+- 原生 `-t` 检查：默认、所有单选项反转、双倍率过滤、展开订阅、自定义链式共 **63** 种配置（含域名嗅探开关）。
 - **46** 个实际使用的公开 MRS 文件均下载成功，并在启动的内核中解析到非零条目；下载仅凭压缩头不算语义验收，运行检查进一步验证了加载。公开来源、大小与摘要见 [规则清单](validation/rules.json)。
 - 回环运行检查：地区/倍率/家宽 provider 过滤、普通 Apple/微软默认直连与 Apple News/智能默认美国。
 - **25** 个 HTTP CONNECT 请求在内核真实规则下执行，查询 `/connections` 确认实际命中组；见 [路由结果](validation/routes.json)。包括 PCC、Siri、News、TV、Fitness/Sports/Books 专用入口、模型 CDN、普通 Apple/微软、国内域名、YouTube/GitHub/Steam。
@@ -33,6 +33,18 @@ node tools/native-check.js /path/to/mihomo .local/rules
 运行环境只使用临时目录和回环监听器，TUN、系统路由、NTP 与 DNS 监听被关闭。SOCKS 模拟节点将任何请求终止到本地测试服务器，不访问目标服务。此测试证明路由选择和 MRS 加载，不证明 Apple 对账号/设备授权，不证明 TUN 的系统覆盖。
 
 GitHub CI 使用同版本 Linux 二进制并核验官方发行摘要；新建 workflow 尚需在远程推送后才能获得 GitHub Actions 的实际结果，不能将本机通过写成远程 CI 已绿。
+
+## 纯 IP 入站的域名嗅探回归
+
+默认开启 `域名嗅探`，配置 HTTP/TLS/QUIC 识别和 `parse-pure-ip: true`，并用 `override-destination: false` 保留原始目标地址。脚本与生成 YAML 使用同一开关，关闭后不依赖嗅探恢复域名。
+
+`tools/native-sniffing.js` 已在 Mihomo v1.19.34 中验证 **7** 个真实回环请求：
+
+- 关闭嗅探：以纯 IP 入站、携带 `github.com` TLS SNI，命中 `microsoft_ip` / `Microsoft`，复现此前域名缺失时的归类机制。
+- 开启嗅探：同一请求恢复 `github.com`，命中 `github` / `GitHub`；另外覆盖 HTTP Host 与 IPv6 目标地址。
+- Siri 的 `api-siri-prod.apple.com` 和 Apple AI 的 `apple-relay.apple.com` 按恢复的 TLS 域名命中各自专用组；普通 Microsoft 域名仍命中 Microsoft 组。
+
+测试使用真实 TLS ClientHello，不完成远端握手，也不跳过证书校验。所有测试组（包括原本直连的组）均替换为回环 SOCKS 模拟出口，避免缺陷复现时向外网 IP 发包；生产规则顺序和域名嗅探配置保持原样，并断言目标 IP 没有被改写。证据仅写入临时目录的 `sniffing.json`。QUIC 配置已通过原生解析，但本次未生成 QUIC 流量验证；没有可见域名的握手仍可能落入 IP 规则。这些结果不等同于用户设备、运营商或 Siri 服务实测。
 
 ## 国际 iCloud 内容域回归
 

@@ -80,6 +80,8 @@ TUN 的 `dns-hijack` 覆盖 TCP/UDP 53，`strict-route` 配合系统接管，额
 
 ## 规则与流量
 
+默认开启 `域名嗅探`，从 HTTP Host、TLS SNI 和可识别的 QUIC 握手补充缺失的域名，使纯 IP 入站也有机会命中 GitHub、Siri 等域名规则。保留实际目标 IP（`override-destination: false`），不解密 HTTPS 正文，不替代 DNS 接管。无法识别的协议、没有可见域名的握手仍按 IP/兜底规则处理；可关闭该选项排查兼容问题。静态 YAML 修改开关后须重新生成。[Mihomo 嗅探说明](https://wiki.metacubex.one/config/sniff/)
+
 继续采用原作者的 [Bett Rules](https://github.com/appshubcc/bett-rules) MRS 动态规则，按需加载、每 86400 秒更新；包含优化 CN IP、国内服务例外和 Apple TV 细分。`cn` 域名库参与国内 DNS，不直接将全部 `cn-domain` 强制直连，保留原作者的 CN IP 兜底算法。
 
 对照 [规则源评估](docs/rule-sources.md) 后，暂未用更大的聚合直连库覆盖现有规则。节流依靠国内服务/CDN 例外、普通 Apple/微软默认直连、模型资源直连、可选低倍率组与 PCDN 拦截。海外未知流量继续代理兜底，避免为了减少代理而让必需代理的流量误直连。没有用测试样本以外的数据宣称某规则源“绝对更精准”或给出节省比例。

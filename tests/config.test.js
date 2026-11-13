@@ -71,6 +71,23 @@ test('default script and provider YAML have complete graphs and encrypted DNS', 
     assert.deepEqual(config.tun['dns-hijack'], ['any:53', 'tcp://any:53']);
   }
 });
+test('sniffing recovers pure-IP domain metadata without overriding destinations in every output mode', () => {
+  for (const subscription of [undefined, clean()]) {
+    for (const minimal of [false, true]) {
+      const config = build({ subscription, settings: { options: { 极简国内外分流模式: minimal } } }).config;
+      assert.equal(config.sniffer.enable, true);
+      assert.equal(config.sniffer['parse-pure-ip'], true);
+      assert.equal(config.sniffer['force-dns-mapping'], true);
+      assert.equal(config.sniffer['override-destination'], false);
+      for (const protocol of ['HTTP', 'TLS', 'QUIC']) {
+        assert.ok(config.sniffer.sniff[protocol].ports.length > 0);
+        assert.ok(!config.sniffer.sniff[protocol]['override-destination']);
+      }
+      encryptedDns(config);
+      assert.equal(build({ subscription, settings: { options: { 域名嗅探: false } } }).config.sniffer.enable, false);
+    }
+  }
+});
 test('Apple PCC/Siri precede Apple CN, advertising and QUIC; normal Apple/CDN remain direct', () => {
   const config = build({ settings: { options: { 屏蔽代理QUIC流量: true } } }).config;
   const rules = config.rules;

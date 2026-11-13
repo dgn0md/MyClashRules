@@ -65,6 +65,7 @@ const ruleOptionsEnable = {
   Apple服务默认直连: true, // Apple AI/Siri 例外仍优先，减少商店/iCloud 流量
   微软服务默认直连: true, // 国内可用服务优先直连，需要时可在组内切换
   TUN: true, // 接管 DNS 所必需；关闭仅适合上级路由器已经接管 DNS 的环境
+  域名嗅探: true, // 从 HTTP/TLS/QUIC 补充缺失域名，避免纯 IP 入站误走服务 IP 规则
   IPv6: true, // DNS AAAA 与全局 IPv6 同步；关闭后不返回 AAAA
   局域网访问: false, // 是否将 mixed-port 暴露给局域网
   PCDN拦截: true, // 保留上游 bilibili PCDN hosts 黑洞
@@ -2082,6 +2083,18 @@ function finalizeMyClashRules(config) {
   config.dns.ipv6 = options.IPv6;
   config.tun.enable = options.TUN;
   config.tun.stack = 'mixed';
+  // 补充未经过内置 DNS/Fake-IP 映射的连接域名；只用于分流，不改写实际目标。
+  config.sniffer = {
+    enable: options.域名嗅探,
+    'force-dns-mapping': true,
+    'parse-pure-ip': true,
+    'override-destination': false,
+    sniff: {
+      HTTP: { ports: [80, '8080-8880'] },
+      TLS: { ports: [443, 8443] },
+      QUIC: { ports: [443, 8443] },
+    },
+  };
   // DNS 仅监听回环；客户端/路由器需将本机 DNS 导入 TUN。
   config.dns.listen = '127.0.0.1:1053';
   config.dns['prefer-h3'] = false;
