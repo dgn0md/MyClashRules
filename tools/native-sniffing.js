@@ -98,9 +98,10 @@ async function verifySniffing({ binary, rulesDir, temp }) {
     }
     for (const [name, spec] of Object.entries(config['rule-providers'])) {
       if (spec.type === 'inline') continue;
-      const file = path.join(dir, `${name}.mrs`);
-      fs.copyFileSync(path.resolve(rulesDir, `${name}.mrs`), file);
-      config['rule-providers'][name] = { type: 'file', path: file, format: 'mrs', behavior: spec.behavior };
+      const filename = `${name}${path.extname(spec.path)}`;
+      const file = path.join(dir, filename);
+      fs.copyFileSync(path.resolve(rulesDir, filename), file);
+      config['rule-providers'][name] = { type: 'file', path: file, format: spec.format, behavior: spec.behavior };
     }
     const file = path.join(dir, 'config.yaml');
     fs.writeFileSync(file, YAML.stringify(config));
@@ -129,6 +130,8 @@ async function verifySniffing({ binary, rulesDir, temp }) {
             { host: 'github.com', protocol: 'TLS', ip: '2001:db8::42', expected: 'GitHub', payload: 'github' },
             { host: 'api-siri-prod.apple.com', protocol: 'TLS', expected: 'Siri', payload: 'api-siri-prod.apple.com' },
             { host: 'apple-relay.apple.com', protocol: 'TLS', expected: 'Apple智能', payload: 'apple-relay.apple.com' },
+            { host: 'unlisted-route-check.net', protocol: 'TLS', ip: '17.0.0.1', expected: 'Apple', payload: 'apple_ip' },
+            { host: 'unlisted-route-check.net', protocol: 'TLS', ip: '17.81.2.1', expected: '直连', payload: 'cn_ip' },
             { host: 'www.microsoft.com', protocol: 'TLS', expected: 'Microsoft', payload: 'microsoft' },
           ]
         : [{ host: 'github.com', protocol: 'TLS', expected: 'Microsoft', payload: 'microsoft_ip' }];

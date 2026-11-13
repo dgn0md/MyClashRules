@@ -21,7 +21,7 @@ async function freePort() {
 async function run() {
   const binary = process.argv[2];
   const rulesDir = process.argv[3];
-  if (!binary) throw new Error('用法：node tools/native-check.js /path/to/mihomo [/path/to/downloaded-mrs]');
+  if (!binary) throw new Error('用法：node tools/native-check.js /path/to/mihomo [/path/to/downloaded-rules]');
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'myclash-native-'));
   console.log(`Evidence directory: ${temp}`);
   const cases = [{ name: 'default', settings: {} }];
@@ -57,8 +57,8 @@ async function run() {
   const config = build().config;
   for (const [name, spec] of Object.entries(config['rule-providers'])) {
     if (spec.type === 'inline') continue;
-    const file = path.resolve(rulesDir, `${name}.mrs`);
-    assert.ok(fs.existsSync(file) && fs.statSync(file).size > 16, `missing MRS ${name}`);
+    const file = path.resolve(rulesDir, `${name}${path.extname(spec.path)}`);
+    assert.ok(fs.existsSync(file) && fs.statSync(file).size > 16, `missing rule ${name}`);
   }
   const local = await fixtures();
   // Offline, isolated smoke test: no TUN, no system routing changes, no external requests.
@@ -89,11 +89,12 @@ async function run() {
   config['proxy-providers'] = { 订阅: { type: 'file', path: provider, 'health-check': { enable: false } } };
   for (const [name, spec] of Object.entries(config['rule-providers'])) {
     if (spec.type === 'inline') continue;
-    const file = path.resolve(rulesDir, `${name}.mrs`);
-    assert.ok(fs.existsSync(file) && fs.statSync(file).size > 16, `missing MRS ${name}`);
-    const localFile = path.join(temp, `${name}.mrs`);
+    const filename = `${name}${path.extname(spec.path)}`;
+    const file = path.resolve(rulesDir, filename);
+    assert.ok(fs.existsSync(file) && fs.statSync(file).size > 16, `missing rule ${name}`);
+    const localFile = path.join(temp, filename);
     fs.copyFileSync(file, localFile);
-    config['rule-providers'][name] = { type: 'file', path: localFile, format: 'mrs', behavior: spec.behavior };
+    config['rule-providers'][name] = { type: 'file', path: localFile, format: spec.format, behavior: spec.behavior };
   }
   fs.writeFileSync(path.join(temp, 'runtime.yaml'), YAML.stringify(config));
   const child = spawn(binary, ['-d', temp, '-f', path.join(temp, 'runtime.yaml')], {
@@ -130,14 +131,35 @@ async function run() {
     assert.equal(proxies.Apple.now, '直连');
     assert.equal(proxies.Microsoft.now, '直连');
     const routes = await verifyRouting({ port: proxyPort, sinkPort: local.sinkPort, track: local.track, api });
+    const selected = await fetch(`http://127.0.0.1:${port}/proxies/Apple`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: '美国' }),
+    });
+    assert.equal(selected.status, 204, 'cannot select Apple proxy for trial');
+    const appleTrial = await verifyRouting({
+      port: proxyPort,
+      sinkPort: local.sinkPort,
+      track: local.track,
+      api,
+      cases: [
+        ['bag.itunes.apple.com', '美国', 'apple'],
+        ['fpinit.itunes.apple.com', '美国', 'apple'],
+        ['gspe35-ssl.ls.apple.com', '美国', 'apple'],
+        ['smp-device-content.apple.com', '美国', 'apple'],
+        ['gs-loc-cn.apple.com', '直连', 'apple_cn', 'Apple'],
+      ],
+    });
     const dnsPolicies = await verifyICloudContentDnsPolicy(api);
     fs.writeFileSync(path.join(temp, 'routes.json'), JSON.stringify(routes, null, 2));
+    fs.writeFileSync(path.join(temp, 'apple-trial.json'), JSON.stringify(appleTrial, null, 2));
     fs.writeFileSync(path.join(temp, 'dns-policies.json'), JSON.stringify(dnsPolicies, null, 2));
     fs.writeFileSync(path.join(temp, 'providers.json'), JSON.stringify(providers, null, 2));
     console.log(
-      `Offline runtime: ${Object.keys(providers).length} MRS/inline providers loaded; region/rate/home filters and Apple defaults verified`,
+      `Offline runtime: ${Object.keys(providers).length} rule providers loaded; region/rate/home filters and Apple defaults verified`,
     );
     console.log(`Loopback routing: ${routes.length} actual CONNECT decisions verified`);
+    console.log(`Apple proxy trial: ${appleTrial.length} actual CONNECT decisions verified`);
     console.log(`Offline DNS: ${dnsPolicies.length} actual A/AAAA policy decisions verified`);
     console.log(`Evidence directory: ${temp}`);
   } finally {

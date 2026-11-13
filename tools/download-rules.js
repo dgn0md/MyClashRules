@@ -16,13 +16,21 @@ async function run() {
       const response = await fetch(spec.url, { signal: AbortSignal.timeout(60000) });
       if (!response.ok) throw new Error(`${name}: HTTP ${response.status}`);
       const bytes = Buffer.from(await response.arrayBuffer());
-      // MRS is Zstandard-compressed; semantic validation is done by native-check.js with Mihomo.
-      if (bytes.length < 16 || bytes.subarray(0, 4).toString('hex') !== '28b52ffd')
-        throw new Error(`${name}: invalid compressed MRS header`);
-      fs.writeFileSync(path.join(dir, `${name}.mrs`), bytes);
+      if (spec.format === 'mrs') {
+        // MRS is Zstandard-compressed; semantic validation is done by native-check.js with Mihomo.
+        if (bytes.length < 16 || bytes.subarray(0, 4).toString('hex') !== '28b52ffd')
+          throw new Error(`${name}: invalid compressed MRS header`);
+      } else if (spec.format === 'text' && spec.behavior === 'classical') {
+        const lines = new TextDecoder('utf-8', { fatal: true }).decode(bytes).split(/\r?\n/)
+          .map((line) => line.trim()).filter((line) => line && !line.startsWith('#'));
+        if (!lines.length || lines.some((line) => !/^DOMAIN(?:-SUFFIX)?,[a-z0-9.-]+$/i.test(line)))
+          throw new Error(`${name}: invalid domain-only classical rules`);
+      } else throw new Error(`${name}: unsupported rule format ${spec.format}/${spec.behavior}`);
+      fs.writeFileSync(path.join(dir, `${name}${path.extname(spec.path)}`), bytes);
       manifest.push({
         name,
         url: spec.url,
+        ...(spec.format !== 'mrs' ? { format: spec.format } : {}),
         behavior: spec.behavior,
         bytes: bytes.length,
         sha256: createHash('sha256').update(bytes).digest('hex'),
@@ -35,7 +43,7 @@ async function run() {
     path.join(dir, 'manifest.json'),
     JSON.stringify({ checkedAt: new Date().toISOString(), providers: manifest }, null, 2) + '\n',
   );
-  console.log(`Verified ${manifest.length} public MRS downloads in ${dir}`);
+  console.log(`Verified ${manifest.length} public rule downloads in ${dir}`);
 }
 run().catch((error) => {
   console.error(error.message);

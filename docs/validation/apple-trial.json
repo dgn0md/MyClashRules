@@ -1,0 +1,56 @@
+[
+  {
+    "host": "bag.itunes.apple.com",
+    "expected": "美国",
+    "rule": "RuleSet",
+    "payload": "apple",
+    "chains": [
+      "美国 1x",
+      "美国",
+      "Apple"
+    ]
+  },
+  {
+    "host": "fpinit.itunes.apple.com",
+    "expected": "美国",
+    "rule": "RuleSet",
+    "payload": "apple",
+    "chains": [
+      "美国 1x",
+      "美国",
+      "Apple"
+    ]
+  },
+  {
+    "host": "gspe35-ssl.ls.apple.com",
+    "expected": "美国",
+    "rule": "RuleSet",
+    "payload": "apple",
+    "chains": [
+      "美国 1x",
+      "美国",
+      "Apple"
+    ]
+  },
+  {
+    "host": "smp-device-content.apple.com",
+    "expected": "美国",
+    "rule": "RuleSet",
+    "payload": "apple",
+    "chains": [
+      "美国 1x",
+      "美国",
+      "Apple"
+    ]
+  },
+  {
+    "host": "gs-loc-cn.apple.com",
+    "expected": "直连",
+    "rule": "RuleSet",
+    "payload": "apple_cn",
+    "chains": [
+      "🇨🇳 直连 | 双栈",
+      "直连"
+    ]
+  }
+]

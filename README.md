@@ -84,6 +84,8 @@ TUN 的 `dns-hijack` 覆盖 TCP/UDP 53，`strict-route` 配合系统接管，额
 
 继续采用原作者的 [Bett Rules](https://github.com/appshubcc/bett-rules) MRS 动态规则，按需加载、每 86400 秒更新；包含优化 CN IP、国内服务例外和 Apple TV 细分。`cn` 域名库参与国内 DNS，不直接将全部 `cn-domain` 强制直连，保留原作者的 CN IP 兜底算法。
 
+Siri 排查期间，`apple_cn` 改用固定版本的 [SukkaW 大陆专用 Apple 域名表](https://github.com/SukkaW/Surge/blob/0afc9c2ee92aadbf79ce1c9caf03f724135073ea/Source/non_ip/apple_cn.conf)（9 条，classical 文本），替代较宽的 `apple@cn`。这会让 `bag.itunes.apple.com`、`fpinit.itunes.apple.com`、`gspe35-ssl.ls.apple.com`、`smp-device-content.apple.com` 落入普通 `Apple` 组；不表示这些域名的服务器一定在境外。需要测试时，在客户端将 `Apple` 组选到全局模式成功的同一个节点并保持规则模式；大陆 IP 仍先由 `cn_ip` 直连，专用 Siri/Apple 智能规则仍优先。测试结束可把 `Apple` 组切回直连。此变更只提供可复现的分流实验，不代表已验证 Siri 恢复。
+
 对照 [规则源评估](docs/rule-sources.md) 后，暂未用更大的聚合直连库覆盖现有规则。节流依靠国内服务/CDN 例外、普通 Apple/微软默认直连、模型资源直连、可选低倍率组与 PCDN 拦截。海外未知流量继续代理兜底，避免为了减少代理而让必需代理的流量误直连。没有用测试样本以外的数据宣称某规则源“绝对更精准”或给出节省比例。
 
 ## 开发与检查
@@ -93,12 +95,12 @@ npm ci
 npm run build
 npm test
 npm run check
-# 可选：联网下载公开规则，并使用已安装的官方 Mihomo
+# 可选：联网下载公开规则（MRS 与 Apple CN 文本规则），并使用已安装的官方 Mihomo
 node tools/download-rules.js .local/rules
 node tools/native-check.js /path/to/mihomo .local/rules
 ```
 
-测试包括上游节点/DNS 兼容模式回归、ES2026 解析、QuickJS 实际执行，以及严格默认、所有布尔开关、Apple 优先级、依赖引用、链式循环和生成一致性。原生检查覆盖各开关配置及真实 MRS 加载；不会开启系统 TUN。
+测试包括上游节点/DNS 兼容模式回归、ES2026 解析、QuickJS 实际执行，以及严格默认、所有布尔开关、Apple 优先级、依赖引用、链式循环和生成一致性。原生检查覆盖各开关配置及实际规则文件加载；不会开启系统 TUN。
 
 ## 来源与许可
 

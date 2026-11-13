@@ -97,6 +97,11 @@ const CASES = [
   ['setup.icloud.com', 'Siri'],
   ['setup.icloud.com.cn', '直连'],
   ['api.smoot.apple.com', 'Siri'],
+  ['bag.itunes.apple.com', 'Apple', 'apple'],
+  ['fpinit.itunes.apple.com', 'Apple', 'apple'],
+  ['gspe35-ssl.ls.apple.com', 'Apple', 'apple'],
+  ['smp-device-content.apple.com', 'Apple', 'apple'],
+  ['gs-loc-cn.apple.com', '直连', 'apple_cn'],
   ['news-client-search.apple.com', 'AppleNews'],
   ['news-assets.apple.com', 'AppleNews'],
   ['apple.news', 'AppleNews'],
@@ -108,9 +113,9 @@ const CASES = [
   ['books.apple.com', 'AppleBooks'],
   ['assets.cdn-apple.com', '直连'],
   ['mesu.apple.com', '直连'],
-  ['swcdn.apple.com', '直连'],
+  ['swcdn.apple.com', 'Apple', 'apple'],
   ['apps.apple.com', '直连'],
-  ['music.apple.com', '直连'],
+  ['music.apple.com', 'Apple', 'apple'],
   ['www.microsoft.com', '直连'],
   ['youtube.com', 'YouTube'],
   ['github.com', 'GitHub'],
@@ -118,9 +123,9 @@ const CASES = [
   ['qq.com', '直连'],
   ['www.baidu.com', '直连'],
 ];
-async function verifyRouting({ port, sinkPort, track, api }) {
+async function verifyRouting({ port, sinkPort, track, api, cases = CASES }) {
   const evidence = [];
-  for (const [host, expected] of CASES) {
+  for (const [host, expected, payload, excluded] of cases) {
     const socket = track(net.connect(port, '127.0.0.1'));
     await once(socket, 'connect');
     socket.write(`CONNECT ${host}:${sinkPort} HTTP/1.1\r\nHost: ${host}:${sinkPort}\r\n\r\n`);
@@ -134,7 +139,9 @@ async function verifyRouting({ port, sinkPort, track, api }) {
     let active;
     for (let attempt = 0; attempt < 20; attempt++) {
       active = (await api('/connections')).connections || [];
-      connection = active.find((c) => c.metadata.host === host);
+      connection = active.find(
+        (c) => c.metadata.host === host && String(c.metadata.sourcePort) === String(socket.localPort),
+      );
       if (connection) break;
       await new Promise((resolve) => setTimeout(resolve, 25));
     }
@@ -143,6 +150,8 @@ async function verifyRouting({ port, sinkPort, track, api }) {
       connection.chains.includes(expected),
       `${host}: expected ${expected}; actual ${JSON.stringify(connection)}`,
     );
+    if (payload) assert.equal(connection.rulePayload, payload, `${host}: wrong matched rule`);
+    if (excluded) assert.ok(!connection.chains.includes(excluded), `${host}: unexpected ${excluded}`);
     evidence.push({
       host,
       expected,

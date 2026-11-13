@@ -88,9 +88,14 @@ test('sniffing recovers pure-IP domain metadata without overriding destinations 
     }
   }
 });
-test('Apple PCC/Siri precede Apple CN, advertising and QUIC; normal Apple/CDN remain direct', () => {
+test('Apple PCC/Siri precede narrow Apple CN, advertising and QUIC; Apple fallback remains selectable', () => {
   const config = build({ settings: { options: { 屏蔽代理QUIC流量: true } } }).config;
   const rules = config.rules;
+  assert.equal(config['rule-providers'].apple_cn.behavior, 'classical');
+  assert.equal(config['rule-providers'].apple_cn.format, 'text');
+  assert.match(config['rule-providers'].apple_cn.url, /SukkaW\/Surge@0afc9c2.*\/apple_cn\.conf$/);
+  assert.ok(rules.indexOf('RULE-SET,apple_cn,直连') < rules.indexOf('RULE-SET,apple,Apple'));
+  assert.ok(rules.indexOf('RULE-SET,cn_ip,直连') < rules.indexOf('RULE-SET,apple_ip,Apple'));
   const apple = rules.indexOf('DOMAIN,apple-relay.apple.com,Apple智能');
   assert.ok(apple >= 0);
   for (const ref of ['RULE-SET,apple_cn,直连', 'RULE-SET,category-ads,AdBlock']) assert.ok(apple < rules.indexOf(ref));

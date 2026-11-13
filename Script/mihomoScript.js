@@ -289,10 +289,13 @@ const baseRuleProviders = {
     'path-in-bundle': 'geo/geosite/nvidia@cn.mrs',
   },
   apple_cn: {
-    ...ruleProviderCommonDomain,
-    url: `${ruleSetBaseUrl}geosite/apple@cn.mrs`,
-    path: './ruleset/apple@cn.mrs',
-    'path-in-bundle': 'geo/geosite/apple@cn.mrs',
+    type: 'http',
+    format: 'text',
+    interval: 86400,
+    behavior: 'classical',
+    // 仅保留大陆专用 Apple 主机；固定版本使 Siri 诊断可重复。
+    url: 'https://fastly.jsdelivr.net/gh/SukkaW/Surge@0afc9c2ee92aadbf79ce1c9caf03f724135073ea/Source/non_ip/apple_cn.conf',
+    path: './ruleset/apple_cn.list',
   },
   microsoft_cn: {
     ...ruleProviderCommonDomain,

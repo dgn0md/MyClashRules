@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-13T02:58:58.070Z",
+  "checkedAt": "2026-11-13T07:33:06.958Z",
   "providers": [
     {
       "name": "ai",
@@ -17,10 +17,11 @@
     },
     {
       "name": "apple_cn",
-      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/apple@cn.mrs",
-      "behavior": "domain",
-      "bytes": 2382,
-      "sha256": "a7d67fd3ad300020620aeca900dddb180f118b6137a1e8fff75b7821151cb880"
+      "url": "https://fastly.jsdelivr.net/gh/SukkaW/Surge@0afc9c2ee92aadbf79ce1c9caf03f724135073ea/Source/non_ip/apple_cn.conf",
+      "format": "text",
+      "behavior": "classical",
+      "bytes": 468,
+      "sha256": "0df672d130fecb1d9a082ac5215fbd96501ab35d07552805b385ed9877c480d3"
     },
     {
       "name": "apple_ip",
