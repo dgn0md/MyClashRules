@@ -1,0 +1,19 @@
+{
+  "name": "myclashrules",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "node tools/build.js",
+    "test": "node Test/run-tests.js && node --test tests/*.test.js",
+    "check": "node tools/build.js --check"
+  },
+  "devDependencies": {
+    "espree": "11.2.0",
+    "prettier": "3.10.1",
+    "quickjs-emscripten": "0.32.0",
+    "yaml": "2.9.1"
+  }
+}

@@ -1,0 +1,177 @@
+[
+  {
+    "host": "apple-relay.apple.com",
+    "expected": "Apple智能",
+    "rule": "Domain",
+    "payload": "apple-relay.apple.com",
+    "chains": ["美国 1x", "美国", "Apple智能"]
+  },
+  {
+    "host": "apple-relay.cloudflare.com",
+    "expected": "Apple智能",
+    "rule": "Domain",
+    "payload": "apple-relay.cloudflare.com",
+    "chains": ["美国 1x", "美国", "Apple智能"]
+  },
+  {
+    "host": "cp4.cloudflare.com",
+    "expected": "Apple智能",
+    "rule": "Domain",
+    "payload": "cp4.cloudflare.com",
+    "chains": ["美国 1x", "美国", "Apple智能"]
+  },
+  {
+    "host": "guzzoni.apple.com",
+    "expected": "Siri",
+    "rule": "Domain",
+    "payload": "guzzoni.apple.com",
+    "chains": ["美国 1x", "美国", "Siri"]
+  },
+  {
+    "host": "api.smoot.apple.com",
+    "expected": "Siri",
+    "rule": "DomainSuffix",
+    "payload": "smoot.apple.com",
+    "chains": ["美国 1x", "美国", "Siri"]
+  },
+  {
+    "host": "news-client-search.apple.com",
+    "expected": "AppleNews",
+    "rule": "Domain",
+    "payload": "news-client-search.apple.com",
+    "chains": ["美国 1x", "美国", "AppleNews"]
+  },
+  {
+    "host": "news-assets.apple.com",
+    "expected": "AppleNews",
+    "rule": "Domain",
+    "payload": "news-assets.apple.com",
+    "chains": ["美国 1x", "美国", "AppleNews"]
+  },
+  {
+    "host": "apple.news",
+    "expected": "AppleNews",
+    "rule": "DomainSuffix",
+    "payload": "apple.news",
+    "chains": ["美国 1x", "美国", "AppleNews"]
+  },
+  {
+    "host": "gspe1-ssl.ls.apple.com",
+    "expected": "Apple地区检测",
+    "rule": "Domain",
+    "payload": "gspe1-ssl.ls.apple.com",
+    "chains": ["美国 1x", "美国", "Apple地区检测"]
+  },
+  {
+    "host": "tv.apple.com",
+    "expected": "AppleTV",
+    "rule": "DomainSuffix",
+    "payload": "tv.apple.com",
+    "chains": ["美国 1x", "美国", "AppleTV"]
+  },
+  {
+    "host": "play-edge.itunes.apple.com",
+    "expected": "AppleTV",
+    "rule": "Domain",
+    "payload": "play-edge.itunes.apple.com",
+    "chains": ["美国 1x", "美国", "AppleTV"]
+  },
+  {
+    "host": "fitness.apple.com",
+    "expected": "AppleFitness",
+    "rule": "DomainSuffix",
+    "payload": "fitness.apple.com",
+    "chains": ["美国 1x", "美国", "AppleFitness"]
+  },
+  {
+    "host": "sports.apple.com",
+    "expected": "AppleSports",
+    "rule": "DomainSuffix",
+    "payload": "sports.apple.com",
+    "chains": ["美国 1x", "美国", "AppleSports"]
+  },
+  {
+    "host": "books.apple.com",
+    "expected": "AppleBooks",
+    "rule": "DomainSuffix",
+    "payload": "books.apple.com",
+    "chains": ["美国 1x", "美国", "AppleBooks"]
+  },
+  {
+    "host": "assets.cdn-apple.com",
+    "expected": "直连",
+    "rule": "Domain",
+    "payload": "assets.cdn-apple.com",
+    "chains": ["🇨🇳 直连 | 双栈", "直连"]
+  },
+  {
+    "host": "mesu.apple.com",
+    "expected": "直连",
+    "rule": "Domain",
+    "payload": "mesu.apple.com",
+    "chains": ["🇨🇳 直连 | 双栈", "直连"]
+  },
+  {
+    "host": "swcdn.apple.com",
+    "expected": "直连",
+    "rule": "RuleSet",
+    "payload": "apple_cn",
+    "chains": ["🇨🇳 直连 | 双栈", "直连"]
+  },
+  {
+    "host": "apps.apple.com",
+    "expected": "直连",
+    "rule": "RuleSet",
+    "payload": "apple",
+    "chains": ["🇨🇳 直连 | 双栈", "直连", "Apple"]
+  },
+  {
+    "host": "music.apple.com",
+    "expected": "直连",
+    "rule": "RuleSet",
+    "payload": "apple_cn",
+    "chains": ["🇨🇳 直连 | 双栈", "直连"]
+  },
+  {
+    "host": "www.microsoft.com",
+    "expected": "直连",
+    "rule": "RuleSet",
+    "payload": "microsoft",
+    "chains": ["🇨🇳 直连 | 双栈", "直连", "Microsoft"]
+  },
+  {
+    "host": "youtube.com",
+    "expected": "YouTube",
+    "rule": "RuleSet",
+    "payload": "youtube",
+    "chains": ["香港 1x", "香港", "默认代理", "YouTube"]
+  },
+  {
+    "host": "github.com",
+    "expected": "GitHub",
+    "rule": "RuleSet",
+    "payload": "github",
+    "chains": ["香港 1x", "香港", "默认代理", "GitHub"]
+  },
+  {
+    "host": "store.steampowered.com",
+    "expected": "Steam",
+    "rule": "RuleSet",
+    "payload": "steam",
+    "chains": ["香港 1x", "香港", "默认代理", "Steam"]
+  },
+  {
+    "host": "qq.com",
+    "expected": "直连",
+    "rule": "RuleSet",
+    "payload": "private_ip",
+    "chains": ["🇨🇳 直连 | 双栈", "直连"]
+  },
+  {
+    "host": "www.baidu.com",
+    "expected": "直连",
+    "rule": "RuleSet",
+    "payload": "geolocation-cn",
+    "chains": ["🇨🇳 直连 | 双栈", "直连"]
+  }
+]

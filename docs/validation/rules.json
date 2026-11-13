@@ -1,0 +1,327 @@
+{
+  "checkedAt": "2026-11-13T02:58:58.070Z",
+  "providers": [
+    {
+      "name": "ai",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-ai-!cn.mrs",
+      "behavior": "domain",
+      "bytes": 2360,
+      "sha256": "252fc3e36adba99ccbe91b2c89eaf315a28e4872120239c665047d6057bf5775"
+    },
+    {
+      "name": "apple",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/apple.mrs",
+      "behavior": "domain",
+      "bytes": 17819,
+      "sha256": "3c47497f1026d6f58906d5a05e6404356eedd15f4f2dcbb32bae39e1dcd3323b"
+    },
+    {
+      "name": "apple_cn",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/apple@cn.mrs",
+      "behavior": "domain",
+      "bytes": 2382,
+      "sha256": "a7d67fd3ad300020620aeca900dddb180f118b6137a1e8fff75b7821151cb880"
+    },
+    {
+      "name": "apple_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/apple.mrs",
+      "behavior": "ipcidr",
+      "bytes": 249,
+      "sha256": "cbfa26ccde9b09d7162be9e3f38fe0ad3d0fdacdcc4df43b13ffc6ddd66f7cd4"
+    },
+    {
+      "name": "apple_tv",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/apple-tvplus.mrs",
+      "behavior": "domain",
+      "bytes": 143,
+      "sha256": "8cc9cead8cdbc4eeaa37bdbdd64ae8b61a84e4025bd3c7213bae054574217e49"
+    },
+    {
+      "name": "category-ads",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-ads.mrs",
+      "behavior": "domain",
+      "bytes": 14948,
+      "sha256": "56119ae80e0dc5ad4cd0994c17af759eb22910d3583cb460a020fd5e619086ad"
+    },
+    {
+      "name": "cn",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/cn.mrs",
+      "behavior": "domain",
+      "bytes": 514271,
+      "sha256": "3042bc4f8357f90b9fa76fe8bcca4a703eafb757108eba09df369d187254200a"
+    },
+    {
+      "name": "cn_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/cn.mrs",
+      "behavior": "ipcidr",
+      "bytes": 43326,
+      "sha256": "72f832e3dd504025ba935446466a78b5e1f80395a4ae3c498de226000a601ff9"
+    },
+    {
+      "name": "cryptocurrency",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-cryptocurrency.mrs",
+      "behavior": "domain",
+      "bytes": 2338,
+      "sha256": "1eeafd495342499595b7bc51d66cb624e8ff9a718688165201218189bced5cd9"
+    },
+    {
+      "name": "douyin",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/douyin.mrs",
+      "behavior": "domain",
+      "bytes": 707,
+      "sha256": "6b226d6f237ade66549c9b2b613a238ba62bf1f1857f2804f4297d19418be222"
+    },
+    {
+      "name": "ehentai",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/ehentai.mrs",
+      "behavior": "domain",
+      "bytes": 148,
+      "sha256": "e3f1f6972bd5afc4defb2708adf4c85aaa71eea789ae2cb90f751ae409988d88"
+    },
+    {
+      "name": "emby",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-emby.mrs",
+      "behavior": "domain",
+      "bytes": 826,
+      "sha256": "19951a0281b14aad91156709f4233139b9bd8fb380842cbb56094a2ed013ae7a"
+    },
+    {
+      "name": "facebook_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/facebook.mrs",
+      "behavior": "ipcidr",
+      "bytes": 431,
+      "sha256": "bbd32c8ab76fffdc509547bc3d51fe4ca116347cfe118a012912b05d2e647307"
+    },
+    {
+      "name": "fakeip_filter",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/fakeip-filter.mrs",
+      "behavior": "domain",
+      "bytes": 1071,
+      "sha256": "9c208ea60b8cc13ef79867ed5010f9ebebd0505bc97e3cd983283ace9c583179"
+    },
+    {
+      "name": "games_cn",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/category-games@cn.mrs",
+      "behavior": "domain",
+      "bytes": 574,
+      "sha256": "69277435faafabdc0836cf14901918302efff1f59b6eb107becc16931749c804"
+    },
+    {
+      "name": "geolocation-!cn",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/geolocation-!cn.mrs",
+      "behavior": "domain",
+      "bytes": 227961,
+      "sha256": "b3c903d8e4e66df1ac612152fe4639643b1f25c502a67d6388af93b375dcd1fa"
+    },
+    {
+      "name": "geolocation-cn",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/geolocation-cn.mrs",
+      "behavior": "domain",
+      "bytes": 34521,
+      "sha256": "5329925eed389cb72ec65b5956284db020e95891433544c3b0c8f3c94079dfed"
+    },
+    {
+      "name": "github",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/github.mrs",
+      "behavior": "domain",
+      "bytes": 890,
+      "sha256": "a15bd2cdd84db2ebcdca1ae3041265f90172445ebd6c07a6eb3118e5929e5fac"
+    },
+    {
+      "name": "google",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/google.mrs",
+      "behavior": "domain",
+      "bytes": 8973,
+      "sha256": "ad92420fecc12694f11af2ed86ddc5d233ec1350b1ae15e8d24959fda23bc200"
+    },
+    {
+      "name": "google_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/google.mrs",
+      "behavior": "ipcidr",
+      "bytes": 5089,
+      "sha256": "2cb0e38da92866bf50581bd11ce3ad6e70bcf56a7f425da53cac3a7564a55a12"
+    },
+    {
+      "name": "googlefcm",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/googlefcm.mrs",
+      "behavior": "domain",
+      "bytes": 133,
+      "sha256": "7196a82539722cdaa8454f821a8ac903b9df89d6f25009667f0ffa083b006cd9"
+    },
+    {
+      "name": "line",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/line.mrs",
+      "behavior": "domain",
+      "bytes": 289,
+      "sha256": "cb553fec05e5d082ce502db4d518b594ea66eb481e0db31905ce395ebee640e4"
+    },
+    {
+      "name": "meta",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/meta.mrs",
+      "behavior": "domain",
+      "bytes": 4994,
+      "sha256": "25d86cb1f526e2e88ce97b1398392d5da8e347063deb2a3481f055d143efaf69"
+    },
+    {
+      "name": "microsoft",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/microsoft.mrs",
+      "behavior": "domain",
+      "bytes": 8004,
+      "sha256": "dbb4ffc19cd1b2f925d72dab94d131257a71a0eae7de816e76e6660f77a5890a"
+    },
+    {
+      "name": "microsoft_cn",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/microsoft@cn.mrs",
+      "behavior": "domain",
+      "bytes": 1983,
+      "sha256": "ba61438136448454859e2eda5e1c0500a2415e6f794c4b0cdc35d2353b0bc009"
+    },
+    {
+      "name": "microsoft_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/microsoft.mrs",
+      "behavior": "ipcidr",
+      "bytes": 6149,
+      "sha256": "db896da58e43a932016c084222b0e981e07a0909554f61479b7e2e4ef6d97cae"
+    },
+    {
+      "name": "netflix",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/netflix.mrs",
+      "behavior": "domain",
+      "bytes": 295,
+      "sha256": "daecea060b67af1c82fe9624e7a164f59d16be6ee4d61257526e0be0e9a5b57c"
+    },
+    {
+      "name": "netflix_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/netflix.mrs",
+      "behavior": "ipcidr",
+      "bytes": 302,
+      "sha256": "b44f1aec75c42518743eefa5264ee8a553dac17d7214794d90f8e41fbc0e45f7"
+    },
+    {
+      "name": "nvidia_cn",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/nvidia@cn.mrs",
+      "behavior": "domain",
+      "bytes": 114,
+      "sha256": "2b2c93733c4d047e3280fc8063a4ab836fa563f3c3832080fb073e1243037c39"
+    },
+    {
+      "name": "patreon",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/patreon.mrs",
+      "behavior": "domain",
+      "bytes": 142,
+      "sha256": "543458dbc61e075919c25038df85bc06bb2d26891c8b224f13a9132d0cd3e493"
+    },
+    {
+      "name": "paypal",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/paypal.mrs",
+      "behavior": "domain",
+      "bytes": 2660,
+      "sha256": "280ee39cc3a7ce846b01818d0f2d07d847c19d70af23459de4c04fb6c89bf908"
+    },
+    {
+      "name": "pikpak",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/pikpak.mrs",
+      "behavior": "domain",
+      "bytes": 167,
+      "sha256": "1d985bb9ac2e7071e825138500294570b125a0163377bb8604920ab60c9c8e58"
+    },
+    {
+      "name": "private",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/private.mrs",
+      "behavior": "domain",
+      "bytes": 781,
+      "sha256": "df452ab1bfb572f366f00001fa4525f16f137dc670aed2c60af0100dc397d3ec"
+    },
+    {
+      "name": "private_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/private.mrs",
+      "behavior": "ipcidr",
+      "bytes": 176,
+      "sha256": "76bcc1ebe5c84aa54362441d924cf7396ddb279d2261d79034235e5ae68fd3e4"
+    },
+    {
+      "name": "spotify",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/spotify.mrs",
+      "behavior": "domain",
+      "bytes": 429,
+      "sha256": "a13485a346bf4add7f8d3859453b11c9a03f34e1bf047c991f13dbe57c2a7e3f"
+    },
+    {
+      "name": "spotify_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/spotify.mrs",
+      "behavior": "ipcidr",
+      "bytes": 106,
+      "sha256": "a4fde5b8a11a64dc9a12c2384d1d92e6b18a85847cabba982a2d83dce5b9d641"
+    },
+    {
+      "name": "steam",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/steam.mrs",
+      "behavior": "domain",
+      "bytes": 889,
+      "sha256": "edfe30eb85f9e6b2b480b0a251bf4f72ace6a1b0d63aff584cb8f69698c7ee48"
+    },
+    {
+      "name": "steam_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/steam.mrs",
+      "behavior": "ipcidr",
+      "bytes": 199,
+      "sha256": "2eac080d757cbbaadd8cd8db94ea4df937e48e14dbf44d9f79f791342f835679"
+    },
+    {
+      "name": "synology",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/synology.mrs",
+      "behavior": "domain",
+      "bytes": 283,
+      "sha256": "c53985c37ae157979388821ed0372797638dafbd4256f4db3f4c0c3d9dfa0890"
+    },
+    {
+      "name": "telegram",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/telegram.mrs",
+      "behavior": "domain",
+      "bytes": 274,
+      "sha256": "ffa4d1d3e8649965e529c1c570d8add75a0d6f70aa8503ece8add841ce48c0e7"
+    },
+    {
+      "name": "telegram_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/telegram.mrs",
+      "behavior": "ipcidr",
+      "bytes": 147,
+      "sha256": "a46940c553bbfa0ceeaf379ac0d97dde0372732ac2069acb55700fbcb68a912e"
+    },
+    {
+      "name": "tiktok",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/tiktok.mrs",
+      "behavior": "domain",
+      "bytes": 555,
+      "sha256": "00db2983b3cb4365e56ae8bcdc7f6085caa12d9c4358dbcbb0c75f00ecf4f7bd"
+    },
+    {
+      "name": "tiktok_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/tiktok.mrs",
+      "behavior": "ipcidr",
+      "bytes": 218,
+      "sha256": "aab1537acf0379f4673e42cdd11150aa41ba610c37043ee2b1ae5a5adfbb488c"
+    },
+    {
+      "name": "twitter",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/twitter.mrs",
+      "behavior": "domain",
+      "bytes": 324,
+      "sha256": "b287eac1d2a97da62e17cffddf55e0296665a289a41fba774fdba7397e6ea3f7"
+    },
+    {
+      "name": "twitter_ip",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geoip/twitter.mrs",
+      "behavior": "ipcidr",
+      "bytes": 203,
+      "sha256": "db63983aafde61adb21cbd9797525f2a253a3a87a758ff0724b368e6f0f5440a"
+    },
+    {
+      "name": "youtube",
+      "url": "https://fastly.jsdelivr.net/gh/appshubcc/bett-rules@meta/geo/geosite/youtube.mrs",
+      "behavior": "domain",
+      "bytes": 1366,
+      "sha256": "e212b2ce9f39b30f4e2ab57da9ed0937673606bc56bb46e5d55ad7dd9af00aef"
+    }
+  ]
+}
